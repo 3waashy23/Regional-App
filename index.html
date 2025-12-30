@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard + Regions</title>
+
+<!-- Icons (same as Regions.html uses) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+:root{
+  --yellow:#f6d84a;
+  --yellow-dark:#c9b458;
+  --bg:#f4f5f9;
+  --ink:#0b0b0b;
+  --ink2:#1f2a5a;
+
+  --leave:#fdecec;
+  --manage:#eef6fd;
+  --att:#f1f1ff;
+  --dash:#fff9ee;
+  --shift:#f4ffe9;
+  --tech:#eefdfa;
+  --regions:#e8edff;
+  --perdiem:#fff9ee;
+
+  --card:#fff;
+  --border: rgba(0,0,0,.10);
+  --shadow:0 10px 24px rgba(0,0,0,.08);
+
+  --kpi-gold:#ffd700;
+  --kpi-red:#ff6b6b;
+  --kpi-green:#55b978;
+  --kpi-blue:#4a7bdc;
+}
+
+*{box-sizing:border-box;font-family:Arial,sans-serif;font-weight:400;}
+body{margin:0;background:var(--bg);}
+
+.phone{
+  max-width:420px;
+  margin:0 auto;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:var(--bg);
+}
+
+/* ===== screen switching ===== */
+.screen{display:none; min-height:100vh;}
+.screen.active{display:flex; flex-direction:column;}
+
+/* =========================
+   DASHBOARD
+   ========================= */
+.header{
+  background:linear-gradient(180deg,var(--yellow),var(--yellow-dark));
+  padding:16px;
+  border-bottom-left-radius:32px;
+  border-bottom-right-radius:32px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
+}
+
+.title{
+  font-size:22px;
+  color:var(--ink);
+}
+
+.icons{display:flex; gap:10px;}
+.icon{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  box-shadow:0 8px 18px rgba(0,0,0,.15);
+  user-select:none;
+}
+.bell{background:#fff2a6}
+.gear{background:#1f2a5a;color:#fff}
+.ban{background:#f26a6a;color:#fff}
+
+.profile{
+  background:rgba(255,255,255,.2);
+  border-radius:26px;
+  padding:16px;
+  text-align:center;
+}
+.avatar{
+  width:72px;height:72px;margin:0 auto 8px;border-radius:50%;
+  background:rgba(255,255,255,.35);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;
+}
+.name{font-size:18px;color:var(--ink);}
+.emp{font-size:13px;margin-top:4px;color:var(--ink);}
+
+.stats{display:flex;margin-top:14px;}
+.stat{flex:1;text-align:center;}
+.stat-icon{
+  width:44px;height:44px;margin:0 auto 6px;border-radius:50%;
+  background:rgba(255,255,255,.35);
+  display:flex;align-items:center;justify-content:center;
+}
+.stat-value{font-size:18px;color:var(--ink);}
+.stat-label{font-size:12px;color:var(--ink);}
+
+.actions-box{
+  background:#fff;
+  margin:14px;
+  padding:14px;
+  border-radius:30px;
+  box-shadow:var(--shadow);
+}
+.actions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.action{
+  border-radius:22px;
+  padding:12px 8px;
+  text-align:center;
+  box-shadow:0 6px 14px rgba(0,0,0,.05);
+  user-select:none;
+}
+.action-icon{
+  width:44px;height:44px;margin:0 auto;border-radius:50%;
+  background:rgba(255,255,255,.6);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+}
+.action-label{
+  margin-top:8px;
+  font-size:14px;
+  color:var(--ink2);
+}
+.leave{background:var(--leave)}
+.manage{background:var(--manage)}
+.att{background:var(--att)}
+.dash{background:var(--dash)}
+.shift{background:var(--shift)}
+.tech{background:var(--tech)}
+.regions{background:var(--regions); cursor:pointer;}
+.perdiem{background:var(--perdiem)}
+.no-click{pointer-events:none;}
+
+.footer{
+  margin-top:auto;
+  background:var(--yellow);
+  text-align:center;
+  padding:12px;
+  font-size:14px;
+  border-top-left-radius:22px;
+  border-top-right-radius:22px;
+}
+
+/* =========================
+   REGIONS PAGE (HEADER + TABS)
+   ========================= */
+.reg-header{
+  background: var(--yellow);
+  padding: 12px 12px 14px;
+  border-bottom-left-radius:32px;
+  border-bottom-right-radius:32px;
+}
+.reg-top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.back-btn{
+  width:64px;
+  height:64px;
+  border-radius:18px;
+  border:none;
+  background:#fff2a6;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 8px 18px rgba(0,0,0,.12);
+  cursor:pointer;
+  user-select:none;
+}
+.back-btn:active{transform:scale(.98);}
+.back-arrow{font-size:26px;color:var(--ink2);line-height:1;}
+.reg-title{font-size:18px;color:var(--ink2);} /* reduced */
+
+.reg-body{
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* Tabs */
+.tabs{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:8px;
+  display:flex;
+  gap:8px;
+  box-shadow:0 6px 14px rgba(0,0,0,.05);
+}
+.tab-btn{
+  flex:1;
+  border:1px solid transparent;
+  background:#f7f7f7;
+  border-radius:14px;
+  padding:10px 8px;
+  font-size:12px;
+  cursor:pointer;
+  color:rgba(0,0,0,.70);
+}
+.tab-btn.active{
+  background:#fff8c7;
+  border-color:var(--yellow-dark);
+  color:var(--ink2);
+}
+
+.panel{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:12px;
+  box-shadow:0 6px 14px rgba(0,0,0,.05);
+}
+
+.filters{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+.filters .full{grid-column:1 / -1;}
+
+label{font-size:12px;color:rgba(0,0,0,.55);}
+select,input[type="text"],input[type="date"]{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 10px;
+  font-size:13px;
+  outline:none;
+  background:#fff;
+}
+
+.btn{
+  border:1px solid rgba(0,0,0,.16);
+  border-radius:10px;
+  padding:10px 12px;
+  font-size:13px;
+  cursor:pointer;
+  background:var(--yellow);
+}
+.btn:active{transform:scale(.99);}
+.btn-outline{
+  background:#fff;
+}
+
+/* KPI cards with icons */
+.kpi-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+.kpi-card{
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:10px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:#fff;
+}
+.kpi-left{flex:1;}
+.kpi-label{font-size:11px;color:rgba(0,0,0,.55);margin-bottom:2px;}
+.kpi-value{font-size:18px;color:var(--ink);margin-bottom:2px;}
+.kpi-extra{font-size:11px;color:rgba(0,0,0,.55);}
+.kpi-icon{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  font-size:14px;
+}
+.kpi-icon.gold{background:var(--kpi-gold); color:#000;}
+.kpi-icon.red{background:var(--kpi-red); color:#fff;}
+.kpi-icon.green{background:var(--kpi-green); color:#fff;}
+.kpi-icon.blue{background:var(--kpi-blue); color:#fff;}
+
+/* table */
+.table-wrap{
+  width:100%;
+  overflow:auto;
+  border-radius:14px;
+  border:1px solid var(--border);
+}
+table{
+  border-collapse:collapse;
+  width:100%;
+  min-width: 820px;
+  background:#fff;
+}
+th, td{
+  padding:10px 10px;
+  border-bottom:1px solid rgba(0,0,0,.06);
+  font-size:12px;
+  text-align:left;
+  white-space:nowrap;
+}
+th{
+  position:sticky;
+  top:0;
+  background:#fbfbfb;
+  color:rgba(0,0,0,.70);
+}
+
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  border:1px solid rgba(0,0,0,.18);
+  font-size:12px;
+  background:#f5f5f5;
+}
+.b-high{background:#ffe4e4;border-color:#ff6b6b;}
+.b-med{background:#fff2d4;border-color:#ffc75a;}
+.b-low{background:#e8faec;border-color:#8fd39b;}
+
+.s-pending{color:#b36b00;}
+.s-progress{color:#0056b3;}
+.s-review{color:#6f42c1;}
+.s-complete{color:#218838;}
+.s-overdue{color:#c82333;}
+
+.action-btn{
+  border:1px solid rgba(0,0,0,.18);
+  background:#f2f2f2;
+  border-radius:10px;
+  padding:7px 10px;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.small-note{
+  font-size:12px;
+  color:rgba(0,0,0,.55);
+  margin-top:8px;
+}
+
+/* Tab content */
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ===== Modal (New Request) ===== */
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:2000;
+}
+.modal-backdrop.show{display:flex;}
+.modal{
+  width:92%;
+  max-width:420px;
+  max-height:86vh;
+  background:#fff;
+  border-radius:16px;
+  border-top:4px solid var(--yellow);
+  box-shadow:0 12px 30px rgba(0,0,0,.30);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.modal-header{
+  padding:12px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(0,0,0,.08);
+}
+.modal-title{font-size:14px;color:var(--ink2);}
+.modal-close{
+  border:none;background:none;font-size:22px;cursor:pointer;color:#555;
+}
+.modal-body{
+  padding:12px 14px;
+  overflow:auto;
+}
+.form-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.form-group{flex:1;min-width:150px;}
+textarea{min-height:80px;resize:vertical;}
+
+</style>
+</head>
+
+<body>
+<div class="phone">
+
+  <!-- ================= DASHBOARD SCREEN ================= -->
+  <div id="screen-dashboard" class="screen active">
+    <div class="header">
+      <div class="topbar">
+        <div class="title">Dashboard</div>
+        <div class="icons">
+          <div class="icon bell">🔔</div>
+          <div class="icon gear">⚙️</div>
+          <div class="icon ban">⦸</div>
+        </div>
+      </div>
+
+      <div class="profile">
+        <div class="avatar">👤</div>
+        <div class="name">Md. Shakour</div>
+        <div class="emp">659000147</div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-value">39.89</div>
+            <div class="stat-label">Hours Worked</div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon">🌴</div>
+            <div class="stat-value">24.5</div>
+            <div class="stat-label">Leaves Left</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions-box">
+      <div class="actions">
+        <div class="action leave no-click"><div class="action-icon">📄</div><div class="action-label">Leave</div></div>
+        <div class="action manage no-click"><div class="action-icon">💼</div><div class="action-label">Managment</div></div>
+        <div class="action att no-click"><div class="action-icon">🧮</div><div class="action-label">Attendance</div></div>
+
+        <div class="action dash no-click"><div class="action-icon">📊</div><div class="action-label">Dashboard</div></div>
+        <div class="action shift no-click"><div class="action-icon">🕒</div><div class="action-label">Shift</div></div>
+        <div class="action tech no-click"><div class="action-icon">🛠️</div><div class="action-label">Technical</div></div>
+
+        <!-- CONNECTED -->
+        <div class="action regions" id="openRegionsBtn"><div class="action-icon">🗺️</div><div class="action-label">Regions</div></div>
+        <div class="action perdiem no-click"><div class="action-icon">💰</div><div class="action-label">Per diem</div></div>
+        <div></div>
+      </div>
+    </div>
+
+    <div class="footer">© 2025</div>
+  </div>
+
+  <!-- ================= REGIONS SCREEN ================= -->
+  <div id="screen-regions" class="screen">
+    <div class="reg-header">
+      <div class="reg-top">
+        <button class="back-btn" id="backToDash" type="button" aria-label="Back">
+          <span class="back-arrow">←</span>
+        </button>
+        <div class="reg-title">Regions</div>
+      </div>
+    </div>
+
+    <div class="reg-body">
+
+      <!-- Tabs (other options as tab) -->
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-cro" type="button">CRO Dashboard</button>
+        <button class="tab-btn" data-tab="tab-rm" type="button">Regional Manager</button>
+        <button class="tab-btn" data-tab="tab-approval" type="button">Approval</button>
+      </div>
+
+      <!-- ===== CRO TAB ===== -->
+      <div id="tab-cro" class="tab-panel active">
+
+        <!-- Filters (KPI must be below filters) -->
+        <div class="panel">
+          <div class="filters">
+            <div>
+              <label>From</label>
+              <input id="fromDate" type="date" />
+            </div>
+            <div>
+              <label>To</label>
+              <input id="toDate" type="date" />
+            </div>
+
+            <div>
+              <label>Region</label>
+              <select id="regionFilter">
+                <option value="All Regions">All Regions</option>
+                <option>Maroodi Jeex</option>
+                <option>Togdheer</option>
+                <option>Sahil</option>
+                <option>Sanaag</option>
+                <option>Sool</option>
+                <option>Awdal</option>
+                <option>Buhoodle</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Status</label>
+              <select id="statusFilter">
+                <option value="All Status">All Status</option>
+                <option>Pending</option>
+                <option>In Progress</option>
+                <option>CRO Review</option>
+                <option>Completed</option>
+                <option>Overdue</option>
+              </select>
+            </div>
+
+            <div class="full">
+              <label>Search</label>
+              <input id="searchInput" type="text" placeholder="Ticket / keyword" />
+            </div>
+
+            <div class="full" style="display:flex; gap:10px;">
+              <button class="btn" id="applyFiltersBtn" type="button">Apply</button>
+              <button class="btn btn-outline" id="resetBtn" type="button">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI (now below filters, with icons) -->
+        <div class="panel">
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-left">
+                <div class="kpi-label">Open Requests</div>
+                <div class="kpi-value" id="kpiOpen">28</div>
+                <div class="kpi-extra">All regions</div>
+              </div>
+              <div class="kpi-icon gold"><i class="fa-solid fa-folder-open"></i></div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-left">
+                <div class="kpi-label">Overdue</div>
+                <div class="kpi-value" id="kpiOverdue">6</div>
+                <div class="kpi-extra">Need escalation</div>
+              </div>
+              <div class="kpi-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-left">
+                <div class="kpi-label">SLA Compliance</div>
+                <div class="kpi-value" id="kpiSla">84%</div>
+                <div class="kpi-extra">This period</div>
+              </div>
+              <div class="kpi-icon green"><i class="fa-solid fa-stopwatch"></i></div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-left">
+                <div class="kpi-label">Closed This Period</div>
+                <div class="kpi-value" id="kpiClosed">19</div>
+                <div class="kpi-extra">Completed</div>
+              </div>
+              <div class="kpi-icon blue"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CRO Details Table -->
+        <div class="panel">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ticket</th>
+                  <th>Date</th>
+                  <th>Region</th>
+                  <th>Assigned to</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="ticketsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== REGIONAL MANAGER TAB ===== -->
+      <div id="tab-rm" class="tab-panel">
+
+        <!-- RM Filters + New Request -->
+        <div class="panel">
+          <div class="filters">
+            <div>
+              <label>From</label>
+              <input id="rmFromDate" type="date" />
+            </div>
+            <div>
+              <label>To</label>
+              <input id="rmToDate" type="date" />
+            </div>
+            <div class="full" style="display:flex; gap:10px;">
+              <button class="btn" id="rmApplyBtn" type="button">Apply</button>
+              <button class="btn" id="rmNewRequestBtn" type="button">New Request</button>
+            </div>
+          </div>
+          <div class="small-note">Regional Manager scope (sample region: Togdheer).</div>
+        </div>
+
+        <!-- RM KPI (below filters) -->
+        <div class="panel">
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-left">
+                <div class="kpi-label">Open Requests</div>
+                <div class="kpi-value" id="rmKpiOpen">5</div>
+                <div class="kpi-extra">Region: Togdheer</div>
+              </div>
+              <div class="kpi-icon gold"><i class="fa-solid fa-folder-open"></i></div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-left">
+                <div class="kpi-label">Overdue</div>
+                <div class="kpi-value" id="rmKpiOverdue">1</div>
+                <div class="kpi-extra">Need CRO support</div>
+              </div>
+              <div class="kpi-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-left">
+                <div class="kpi-label">SLA Compliance</div>
+                <div class="kpi-value" id="rmKpiSla">88%</div>
+                <div class="kpi-extra">This period</div>
+              </div>
+              <div class="kpi-icon green"><i class="fa-solid fa-stopwatch"></i></div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-left">
+                <div class="kpi-label">Closed This Period</div>
+                <div class="kpi-value" id="rmKpiClosed">7</div>
+                <div class="kpi-extra">Completed</div>
+              </div>
+              <div class="kpi-icon blue"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RM Table -->
+        <div class="panel">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ticket</th>
+                  <th>Date</th>
+                  <th>Region</th>
+                  <th>Assigned to</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="rmBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== APPROVAL TAB ===== -->
+      <div id="tab-approval" class="tab-panel">
+
+        <!-- Approval KPI -->
+        <div class="panel">
+          <div class="kpi-grid" style="grid-template-columns:1fr;">
+            <div class="kpi-card">
+              <div class="kpi-left">
+                <div class="kpi-label">Unreviewed</div>
+                <div class="kpi-value" id="apUnreviewed">3</div>
+                <div class="kpi-extra">Waiting CRO</div>
+              </div>
+              <div class="kpi-icon red"><i class="fa-solid fa-user-check"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CRO Review Inbox -->
+        <div class="panel">
+          <div class="small-note" style="margin-bottom:10px;">CRO Review Inbox (example)</div>
+          <div class="table-wrap" style="min-width:auto;">
+            <table style="min-width:520px;">
+              <thead>
+                <tr>
+                  <th>Ticket</th>
+                  <th>Region</th>
+                  <th>Assigned to</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>MJ-2025-0012</td>
+                  <td>Maroodi Jeex</td>
+                  <td>Finance</td>
+                  <td>
+                    <button class="btn" type="button" onclick="alert('Approved (demo)')">Approve</button>
+                    <button class="btn btn-outline" type="button" onclick="alert('Returned (demo)')">Return</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Assign Owner form -->
+        <div class="panel">
+          <div class="small-note" style="margin-bottom:10px;">Assign Owner (example)</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ticket ID</label>
+              <input type="text" value="SA-2025-0088">
+            </div>
+            <div class="form-group">
+              <label>Assigned to</label>
+              <select>
+                <option>CTO - Network Lead</option>
+                <option>CTO - Systems Lead</option>
+                <option>CFO - Finance Ops</option>
+                <option>COO - Field Ops</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn" type="button" onclick="alert('Assigned (demo)')">Assign</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="footer">© 2025</div>
+  </div>
+
+</div>
+
+<!-- ===== NEW REQUEST MODAL (form included) ===== -->
+<div class="modal-backdrop" id="rmModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="New Regional Request">
+    <div class="modal-header">
+      <div class="modal-title">New Regional Request</div>
+      <button class="modal-close" type="button" id="rmModalClose">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Region</label>
+          <input type="text" value="Togdheer" disabled>
+        </div>
+        <div class="form-group">
+          <label>Assigned to</label>
+          <select id="rmDeptSelect">
+            <option value="Commercial">Commercial</option>
+            <option value="Finance">Finance</option>
+            <option value="Technical" selected>Technical</option>
+            <option value="Operation">Operation</option>
+            <option value="HR">HR</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <select id="rmCategorySelect"></select>
+        </div>
+        <div class="form-group">
+          <label>Priority</label>
+          <select id="rmPrioritySelect">
+            <option>Low</option>
+            <option>Medium</option>
+            <option selected>High</option>
+            <option>Critical</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:10px;">
+        <label>Summary</label>
+        <input id="rmSummary" type="text" placeholder="Short title of the request">
+      </div>
+
+      <div class="form-group" style="margin-bottom:10px;">
+        <label>Details</label>
+        <textarea id="rmDetails" placeholder="Describe impact, site, support needed..."></textarea>
+      </div>
+
+      <button class="btn" type="button" id="rmSubmitBtn">Submit</button>
+      <div class="small-note">
+        In production this will create a ticket, log it in CRO office and notify the assigned department.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========= Screen Navigation ========= */
+const dash = document.getElementById('screen-dashboard');
+const regions = document.getElementById('screen-regions');
+
+document.getElementById('openRegionsBtn').addEventListener('click', () => {
+  dash.classList.remove('active');
+  regions.classList.add('active');
+});
+
+document.getElementById('backToDash').addEventListener('click', () => {
+  regions.classList.remove('active');
+  dash.classList.add('active');
+});
+
+/* ========= Tabs ========= */
+const tabBtns = Array.from(document.querySelectorAll('.tab-btn'));
+const tabPanels = Array.from(document.querySelectorAll('.tab-panel'));
+
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const id = btn.getAttribute('data-tab');
+    tabPanels.forEach(p=>p.classList.toggle('active', p.id===id));
+    // close modal on tab switch
+    closeRmModal();
+  });
+});
+
+/* ========= CRO DATA (exact 10 rows) ========= */
+const CRO_TICKETS = [
+  {ticket:"SA-2025-0088", date:"2025-01-05", region:"Sanaag", assigned:"Technical", category:"Network/Coverage", priority:"High", status:"In Progress"},
+  {ticket:"TG-2025-0029", date:"2025-01-03", region:"Togdheer", assigned:"HR", category:"Perdiem", priority:"Medium", status:"Pending"},
+  {ticket:"AW-2025-0044", date:"2025-01-02", region:"Awdal", assigned:"Operation", category:"Sites Items", priority:"Medium", status:"CRO Review"},
+  {ticket:"MJ-2025-0012", date:"2025-01-01", region:"Maroodi Jeex", assigned:"Finance", category:"Budget", priority:"Medium", status:"Pending"},
+  {ticket:"SH-2025-0007", date:"2024-12-29", region:"Sahil", assigned:"Commercial", category:"Branding & Visibility", priority:"Low", status:"Completed"},
+  {ticket:"SO-2025-0031", date:"2025-01-04", region:"Sool", assigned:"Technical", category:"System Issue", priority:"High", status:"Overdue"},
+  {ticket:"BH-2025-0015", date:"2024-12-30", region:"Buhoodle", assigned:"Operation", category:"Sites Security", priority:"Medium", status:"In Progress"},
+  {ticket:"AW-2025-0050", date:"2025-01-06", region:"Awdal", assigned:"Commercial", category:"Sales Stock", priority:"Low", status:"Pending"},
+  {ticket:"TG-2025-0041", date:"2025-01-04", region:"Togdheer", assigned:"Technical", category:"Network/Coverage", priority:"High", status:"In Progress"},
+  {ticket:"SA-2025-0095", date:"2025-01-02", region:"Sanaag", assigned:"Finance", category:"Payments", priority:"Medium", status:"Pending"},
+];
+
+/* ========= RM DATA (sample 3 rows from Regions.html RM section) ========= */
+const RM_TICKETS = [
+  {ticket:"TG-2025-0041", date:"2025-01-04", region:"Togdheer", assigned:"Technical", category:"Network/Coverage", priority:"High", status:"In Progress"},
+  {ticket:"TG-2025-0038", date:"2025-01-02", region:"Togdheer", assigned:"Commercial", category:"Customer Complaint", priority:"Medium", status:"Completed"},
+  {ticket:"TG-2025-0029", date:"2025-01-01", region:"Togdheer", assigned:"HR", category:"Perdiem", priority:"Medium", status:"Pending"},
+];
+
+const ticketsBody = document.getElementById('ticketsBody');
+const rmBody = document.getElementById('rmBody');
+
+function priBadge(p){
+  const x = (p||"").toLowerCase();
+  if (x.includes("high") || x.includes("critical")) return `<span class="badge b-high">${p}</span>`;
+  if (x.includes("low")) return `<span class="badge b-low">${p}</span>`;
+  return `<span class="badge b-med">${p}</span>`;
+}
+
+function statusSpan(s){
+  let cls = "";
+  if (s === "Pending") cls = "s-pending";
+  else if (s === "In Progress") cls = "s-progress";
+  else if (s === "CRO Review") cls = "s-review";
+  else if (s === "Completed") cls = "s-complete";
+  else if (s === "Overdue") cls = "s-overdue";
+  return `<span class="${cls}">${s}</span>`;
+}
+
+function attachRowActions(container, list){
+  container.querySelectorAll('button[data-ticket]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-ticket');
+      const row = list.find(x => x.ticket === id);
+      if (!row) return;
+      alert(
+        `Ticket: ${row.ticket}\n` +
+        `Date: ${row.date}\n` +
+        `Region: ${row.region}\n` +
+        `Assigned to: ${row.assigned}\n` +
+        `Category: ${row.category}\n` +
+        `Priority: ${row.priority}\n` +
+        `Status: ${row.status}`
+      );
+    });
+  });
+}
+
+function renderTickets(container, list){
+  container.innerHTML = list.map(t => `
+    <tr>
+      <td>${t.ticket}</td>
+      <td>${t.date}</td>
+      <td>${t.region}</td>
+      <td>${t.assigned}</td>
+      <td>${t.category}</td>
+      <td>${priBadge(t.priority)}</td>
+      <td>${statusSpan(t.status)}</td>
+      <td><button class="action-btn" type="button" data-ticket="${t.ticket}">View details</button></td>
+    </tr>
+  `).join("");
+  attachRowActions(container, list);
+}
+
+/* ===== KPI update based on visible list (CRO) ===== */
+function updateCroKpis(list){
+  const total = list.length || 0;
+  const closed = list.filter(x=>x.status==="Completed").length;
+  const overdue = list.filter(x=>x.status==="Overdue").length;
+  const open = Math.max(0, total - closed);
+  const sla = total ? Math.round(((total - overdue)/total)*100) : 0;
+
+  document.getElementById('kpiOpen').textContent = open;
+  document.getElementById('kpiOverdue').textContent = overdue;
+  document.getElementById('kpiClosed').textContent = closed;
+  document.getElementById('kpiSla').textContent = sla + "%";
+}
+
+function updateRmKpis(list){
+  const total = list.length || 0;
+  const closed = list.filter(x=>x.status==="Completed").length;
+  const overdue = list.filter(x=>x.status==="Overdue").length;
+  const open = Math.max(0, total - closed);
+  const sla = total ? Math.round(((total - overdue)/total)*100) : 0;
+
+  document.getElementById('rmKpiOpen').textContent = open;
+  document.getElementById('rmKpiOverdue').textContent = overdue;
+  document.getElementById('rmKpiClosed').textContent = closed;
+  document.getElementById('rmKpiSla').textContent = sla + "%";
+}
+
+/* ========= CRO Filters ========= */
+function applyCroFilters(){
+  const from = document.getElementById('fromDate').value;
+  const to = document.getElementById('toDate').value;
+  const region = document.getElementById('regionFilter').value;
+  const status = document.getElementById('statusFilter').value;
+  const q = (document.getElementById('searchInput').value || "").trim().toLowerCase();
+
+  const fromD = from ? new Date(from) : null;
+  const toD = to ? new Date(to) : null;
+
+  const filtered = CRO_TICKETS.filter(t => {
+    if (region !== "All Regions" && t.region !== region) return false;
+    if (status !== "All Status" && t.status !== status) return false;
+
+    if (fromD || toD){
+      const d = new Date(t.date);
+      if (fromD && d < fromD) return false;
+      if (toD && d > toD) return false;
+    }
+
+    if (q){
+      const hay = `${t.ticket} ${t.region} ${t.assigned} ${t.category} ${t.priority} ${t.status} ${t.date}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  renderTickets(ticketsBody, filtered);
+  updateCroKpis(filtered);
+}
+
+document.getElementById('applyFiltersBtn').addEventListener('click', applyCroFilters);
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  document.getElementById('fromDate').value = "";
+  document.getElementById('toDate').value = "";
+  document.getElementById('regionFilter').value = "All Regions";
+  document.getElementById('statusFilter').value = "All Status";
+  document.getElementById('searchInput').value = "";
+  renderTickets(ticketsBody, CRO_TICKETS);
+  updateCroKpis(CRO_TICKETS);
+});
+
+/* ========= RM Filter (date only demo) ========= */
+document.getElementById('rmApplyBtn').addEventListener('click', () => {
+  const from = document.getElementById('rmFromDate').value;
+  const to = document.getElementById('rmToDate').value;
+  const fromD = from ? new Date(from) : null;
+  const toD = to ? new Date(to) : null;
+
+  const filtered = RM_TICKETS.filter(t => {
+    const d = new Date(t.date);
+    if (fromD && d < fromD) return false;
+    if (toD && d > toD) return false;
+    return true;
+  });
+
+  renderTickets(rmBody, filtered);
+  updateRmKpis(filtered);
+});
+
+/* ========= Modal (New Request form) ========= */
+const rmModal = document.getElementById('rmModal');
+const rmModalClose = document.getElementById('rmModalClose');
+
+function openRmModal(){
+  rmModal.classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeRmModal(){
+  rmModal.classList.remove('show');
+  document.body.style.overflow='';
+}
+
+document.getElementById('rmNewRequestBtn').addEventListener('click', openRmModal);
+rmModalClose.addEventListener('click', closeRmModal);
+rmModal.addEventListener('click', (e)=>{ if(e.target===rmModal) closeRmModal(); });
+
+/* Categories by department (simple mapping based on your table categories) */
+const deptCategories = {
+  Technical: ["Network/Coverage","System Issue","Power","Transmission"],
+  Finance: ["Budget","Payments","Suppliers"],
+  Operation: ["Sites Items","Sites Security","Logistics"],
+  HR: ["Perdiem","Staffing","Policy"],
+  Commercial: ["Branding & Visibility","Sales Stock","Customer Complaint"]
+};
+
+const rmDeptSelect = document.getElementById('rmDeptSelect');
+const rmCategorySelect = document.getElementById('rmCategorySelect');
+
+function fillCategories(){
+  const dept = rmDeptSelect.value;
+  const cats = deptCategories[dept] || ["General"];
+  rmCategorySelect.innerHTML = cats.map(c=>`<option>${c}</option>`).join("");
+}
+rmDeptSelect.addEventListener('change', fillCategories);
+
+/* Submit (demo) */
+document.getElementById('rmSubmitBtn').addEventListener('click', () => {
+  const dept = rmDeptSelect.value;
+  const cat = rmCategorySelect.value;
+  const pri = document.getElementById('rmPrioritySelect').value;
+  const sum = document.getElementById('rmSummary').value.trim();
+  const det = document.getElementById('rmDetails').value.trim();
+  alert(
+    `Submitted (demo)\n\nAssigned to: ${dept}\nCategory: ${cat}\nPriority: ${pri}\nSummary: ${sum || '—'}\nDetails: ${det || '—'}`
+  );
+  closeRmModal();
+});
+
+/* ========= Init ========= */
+fillCategories();
+renderTickets(ticketsBody, CRO_TICKETS);
+updateCroKpis(CRO_TICKETS);
+
+renderTickets(rmBody, RM_TICKETS);
+updateRmKpis(RM_TICKETS);
+</script>
+
+</body>
+</html>
